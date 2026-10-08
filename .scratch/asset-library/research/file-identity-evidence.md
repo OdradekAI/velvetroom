@@ -1,10 +1,10 @@
 # 挂载目录、存储源与原件身份：第一方依据
 
-访问日期：2026-10-08（Asia/Shanghai）。对应研究票：[27：挂载目录、存储源与原件身份](../issues/27-file-identity-evidence.md)。采用 research 后台研究流程与 agent-reach 网页路线；来源限 Apple、Microsoft 官方文档及协议规范。
+访问日期：2026-10-08（Asia/Shanghai）。对应研究票：[挂载目录、存储源与原件身份](../issues/27-file-identity-evidence.md)。采用 research 后台研究流程与 agent-reach 网页路线；来源限 Apple、Microsoft 官方文档及协议规范。
 
 **状态：文档研究完成；没有运行文件系统／NAS 原型、扫描用户图库或操作真实原件。** 本报告不给出跨平台自动找回成功率，不选择库、最低系统版本或最终匹配算法。
 
-产品权威为[票03 的 Answer](../issues/03-data-authority.md#answer)：已有文件原位管理；媒体与资料有独立条目身份；每条媒体一个当前原件位置；允许明确建立多个独立媒体条目共用原件；确认的原件改写自动刷新，共用条目共同受影响；不自动保存旧字节；可靠且唯一确认身份才自动关联，歧义交用户确认；离线、缺失和访问失败均保留记录。这些是产品选择，不是下述 API 已经实现它们的证明。
+产品权威为[数据权威决定 的 Answer](../issues/03-data-authority.md#answer)：已有文件原位管理；媒体与资料有独立条目身份；每条媒体一个当前原件位置；允许明确建立多个独立媒体条目共用原件；确认的原件改写自动刷新，共用条目共同受影响；不自动保存旧字节；可靠且唯一确认身份才自动关联，歧义交用户确认；离线、缺失和访问失败均保留记录。这些是产品选择，不是下述 API 已经实现它们的证明。
 
 下文用 **文档保证** 表示来源明确承诺，用 **条件** 表示其作用域／前提，用 **推论** 表示本项目由证据得出的约束，用 **未知** 表示本次没有取得保证或验证。协议的 SHOULD 不升级为 MUST；API 名称含 persistent 不升级为永久唯一。
 
@@ -12,7 +12,7 @@
 
 | 对象 | 本报告中的含义 | 不能等同于 |
 | --- | --- | --- |
-| 条目身份 | 本机管理记录中的媒体／参考资料身份，由票03定义 | 路径、内容 hash、系统 file ID |
+| 条目身份 | 本机管理记录中的媒体／参考资料身份，由数据权威决定定义 | 路径、内容 hash、系统 file ID |
 | 原件关系 | 哪些媒体条目明确共用同一个当前原件 | 内容相同的任意副本；一次扫描命中的条目数 |
 | 文件系统对象身份 | 指定卷／文件系统及有效时间范围内的文件对象，如 inode／file ID | 永久文档身份、跨卷复制后的新对象 |
 | 文档延续身份 | 某些系统用于跟踪安全保存等操作的文档标识 | 不变的 inode 或不变的字节 |
@@ -82,7 +82,7 @@
 | 原子替换／安全保存 | Apple `rename` 在目标已存在时替换该目录项；Windows `ReplaceFileW` 最终采用 replacement 的 ID；Apple document ID 可延续 safe-save。[rename(2)](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/rename.2.html)、[ReplaceFileW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew)、[documentIdentifier](https://developer.apple.com/documentation/foundation/urlresourcevalues/documentidentifier) | 路径连续可见不等于对象未换。需区分原地改写、文档安全保存、无关文件替换；本报告不研究写入事务协议。 |
 | 删除后同路径复用 | file ID 允许复用；路径是访问名字，不能约束后来占用者，见 Windows ID 文档。 | 名字、大小、时间甚至字节都可相同；失去连续性后必须允许身份未知。 |
 | hardlink | 多路径可指向同卷同一文件；对该对象的修改从各链接可见。[Microsoft Hard Links](https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions) | 不应按路径数自动建立多个“物理原件”。替换其中一个目录项后还须重新核对对象；业务是否保留别名路径由后续设计决定。 |
-| symlink／junction | Apple `lstat` 与 `stat` 观察对象不同；Windows junction 可指向另一当地卷上的目录。[Apple stat(2)](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/stat.2.html)、[Microsoft Links](https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions) | 链接本身的身份与目标身份分开；链接可改指向、形成循环、穿出源目录或跨卷。不能只保存规范化字符串就宣称唯一。 |
+| symlink／junction | Apple `lstat` 与 `stat` 观察对象不同；Windows junction 可指向另一本地卷上的目录。[Apple stat(2)](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/stat.2.html)、[Microsoft Links](https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions) | 链接本身的身份与目标身份分开；链接可改指向、形成循环、穿出源目录或跨卷。不能只保存规范化字符串就宣称唯一。 |
 | 重叠源／同目录多入口 | Windows mounted folder 与盘符可访问同卷；hardlink 能使不同路径访问同对象，见上文。 | 扫描命中需要保留从哪个登记源观察到的证据；不能因重复遍历重复新增，也不能把独立媒体条目暗中合并。 |
 | 大小写 | APFS 在 macOS 有大小写敏感／不敏感变体；Windows 还可按目录设置大小写敏感。[Apple APFS FAQ](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/APFS_Guide/FAQ/FAQ.html)、[Microsoft Case Sensitivity](https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity) | 全局小写转换可能把两个文件错误合并；仅按 OS 名称决定比较规则也不充分。 |
 | Unicode 名称 | Apple FAQ 描述 APFS 保留名称规范化形式，并在所列系统版本中规范化不敏感；Windows 文件 I/O 将路径视为 WCHAR 序列。[APFS FAQ](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/APFS_Guide/FAQ/FAQ.html)、[Windows 路径规则](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation) | 不用一套 NFC／NFD 规则覆盖所有源；保留实际名称表示，候选比较和对象身份核对分开。SMB 组合仍需测试。 |
@@ -103,7 +103,7 @@
 
 错误语义依据：[Apple stat(2)](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/stat.2.html)、[Windows System Error Codes 0–499](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-)；身份能力依据见第3–5节。表内产品分类是**候选推论**，并非这几个错误码足以跨所有驱动唯一分类。尤其 `ERROR_BAD_NETPATH` 只说网络路径找不到，不能独自区分网络、共享改名或配置变化。
 
-所有结果都应带观察时间与源状态；失败或部分枚举不能被解释成“其余全部缺失”。检查与读取之间也可能发生替换，句柄／同次观察核对是后续应验证的候选方式。按票03，以上异常均保留条目与整理信息。
+所有结果都应带观察时间与源状态；失败或部分枚举不能被解释成“其余全部缺失”。检查与读取之间也可能发生替换，句柄／同次观察核对是后续应验证的候选方式。按数据权威决定，以上异常均保留条目与整理信息。
 
 ## 8. 候选判定表：哪些证据可以消费
 
@@ -115,7 +115,7 @@
 | 旧原件至新位置有符合平台契约的连续对象依据 | 可考虑重新定位既有原件；共同更新已明确共用它的媒体关系 | 历史断档、跨卷、源换绑或 ID 复用不能排除时请求确认 |
 | bookmark 解析成功，且源与对象／文档证据相容 | 返回候选位置；经验证的组合可进一步判断 | 单独解析成功、stale、冲突或多个候选不能直接授权关联 |
 | `documentIdentifier` 等可用的文档延续证据 | 候选识别经过安全保存仍延续的文档，接受新的底层对象和内容状态 | 具体卷／保存方式未经验证，或与删除重建无法区分时确认 |
-| 可靠确认同一原件，内容校验变化 | 按票03保留条目，刷新属性及派生结果，影响所有共用条目 | 原件身份尚不确定时先处理身份，不直接把新内容套入旧条目 |
+| 可靠确认同一原件，内容校验变化 | 按数据权威决定保留条目，刷新属性及派生结果，影响所有共用条目 | 原件身份尚不确定时先处理身份，不直接把新内容套入旧条目 |
 | 同挂载点／盘符／UNC／文件名／相对路径 | 仅用于定位候选及展示上次位置 | 不单独自动关联 |
 | 同 hash／大小／时间或搜索只找到一个同内容文件 | 仅为内容／候选线索；一个搜索结果不等于身份被唯一证明 | 不自动合并条目，不自动认作备用原件 |
 | 无证据、矛盾证据、多个合理候选或访问失败 | 明确返回未知／待确认及原因 | 保留既有管理记录和最后已确认关系，等待重新检查或用户定位 |
@@ -128,9 +128,9 @@
 
 | 环境轴 | 最少覆盖及目的 |
 | --- | --- |
-| macOS 当地卷 | APFS 默认与大小写敏感各一组；检验资源 ID、卷 ID、document ID、书签及名称规则。记录 OS 版本，不预选最低版本。 |
-| Windows 当地卷 | NTFS 一组，含大小写敏感目录；检验 64／128 位 ID、卷入口、硬链接、替换保存。若未来承诺 ReFS，增加该组，不从 NTFS 推导。 |
-| 可移除卷 | exFAT 在两平台各读一组；覆盖拔插、挂载点／盘符变化及与当地卷不同的能力缺失。FAT 仅在承诺支持时另加。 |
+| macOS 本地卷 | APFS 默认与大小写敏感各一组；检验资源 ID、卷 ID、document ID、书签及名称规则。记录 OS 版本，不预选最低版本。 |
+| Windows 本地卷 | NTFS 一组，含大小写敏感目录；检验 64／128 位 ID、卷入口、硬链接、替换保存。若未来承诺 ReFS，增加该组，不从 NTFS 推导。 |
+| 可移除卷 | exFAT 在两平台各读一组；覆盖拔插、挂载点／盘符变化及与本地卷不同的能力缺失。FAT 仅在承诺支持时另加。 |
 | 同一 SMB 共享 | macOS 与 Windows 分别用系统挂载访问同一隔离共享；记录 NAS／服务器版本、后端 FS、协议方言、权限和实际返回字段。至少加一个不同服务端实现作差异对照；样本不足时缩小结论范围。 |
 | 应用访问上下文 | 未来确定发布模式后，覆盖其实际沙盒／授权上下文；仅命令行工具成功不等于发布应用有权访问。 |
 
@@ -146,7 +146,7 @@
 | 名称及权限 | 仅大小写差异、Unicode 等价写法、取消父目录／文件读取权限、凭据失效 | 实际名称、可比较规则、缺失与拒绝访问是否分开 |
 | 竞态及共享条目 | 扫描到读取之间替换；两个独立媒体条目明确共用样本 | 是否检测过期观察；确认原件变化后两条刷新，整理信息仍独立 |
 
-每条样本保存预置事实、操作前后证据、实际错误、程序判定及理由。接受标准首先是**不错误自动关联**，其次才是所测环境中可自动恢复的覆盖范围；原件连续性不明的样本应得到未知／待确认，而不是凭同路径或同内容补齐。
+每条样本保存预置事实、操作前后证据、实际错误、程序判定及理由。建议的验证标准首先是**不错误自动关联**，其次才是所测环境中可自动恢复的覆盖范围；原件连续性不明的样本应得到未知／待确认，而不是凭同路径或同内容补齐。
 
 ## 10. 尚缺证据与检索记录
 
