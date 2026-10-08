@@ -169,3 +169,101 @@ macOS GUI 应用不继承 shell 初始化文件里的 PATH，所以终端中能�
 按 research 技能，以后台代理核对第一方文档、官方仓库固定源码与发布元数据。按 agent-reach 使用 Jina Reader 读取 Rust 官方资料、GitHub CLI 读取官方源码；Web 工具读取 Tauri/Apple 官方页面，未采用第三方教程。读取 source tree 时两次未引用的 shell 查询参数被 zsh 拒绝，改为引用参数后成功；不存在据此执行代码。一个猜测的 asset-scope 文档路径无法读取，因此不将其作为证据，关键要求以实际可读的配置与 convertFileSrc 文档为准。
 
 本研究仅新增此报告，未安装依赖、运行下载的安装器、编译原型、启动 UI、读写真实图库或修改全局 shell 配置。报告独立研究分支由 private index 生成，不合并主分支，不创建 PR。
+
+## 补充：macOS 自有 Swift 媒体实验辅助程序（2026-10-09）
+
+本节只调查一个可由主代理编译、随 Tauri 原型包运行的 **macOS 实验 helper**。输入限定已知自制样本，输出限定独立实验目录；不把 Apple 框架选定为生产后端，不声称 Windows 有对应能力，也不改变已确认的格式验收目标。研究代理只读官方网页与 Apple SDK 文本，没有编译或运行下面的 API。
+
+本机 `MacOSX.sdk` 实际解析到 `/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk`；`SDKSettings.plist` 的版本为 `26.5`、CanonicalName 为 `macosx26.5`。SDK 版本与主代理提供的主机系统版本是不同信息。核对文件为该 SDK 下的 ImageIO `CGImageSource.h` / `CGImageProperties.h`、PDFKit `PDFDocument.h` / `PDFPage.h`、AVFoundation `AVAssetExportSession.h` 及 `usr/lib/swift/AVFoundation.swiftmodule/arm64e-apple-macos.swiftinterface`。
+
+### ImageIO：HEIC 主图与尺寸受控的 PNG
+
+最短 API 路径是 `CGImageSourceCreateWithURL` 建立源，检查非空和 `CGImageSourceGetCount`，通过 `CGImageSourceGetPrimaryImageIndex` 取主图索引，再创建该索引的图像或缩略图。主图函数从 macOS 10.14 可用，针对 HEIF 返回主图位置；其他格式返回 0。不能对所有 HEIC 简单假定第 0 张就是主图，也不能把主图成功解码当作深度图、多图浏览或 Live Photo 已实现。[建立源](https://developer.apple.com/documentation/imageio/cgimagesourcecreatewithurl(_:_:))、[主图索引](https://developer.apple.com/documentation/imageio/cgimagesourcegetprimaryimageindex(_:))、[图像数量](https://developer.apple.com/documentation/imageio/cgimagesourcegetcount(_:))
+
+尺寸受控的预览可用以下代码形态；上下文中的 `source`、`index` 和 `pixelLimit` 必须已验证：
+
+```swift
+let options: [CFString: Any] = [
+    kCGImageSourceCreateThumbnailFromImageAlways: true,
+    kCGImageSourceCreateThumbnailWithTransform: true,
+    kCGImageSourceThumbnailMaxPixelSize: pixelLimit
+]
+let preview = CGImageSourceCreateThumbnailAtIndex(source, index, options as CFDictionary)
+```
+
+`Always` 从图像生成缩略图；`WithTransform` 根据原图方向及像素宽高比旋转/缩放；不提供 `MaxPixelSize` 时可能生成原图尺寸。返回值仍可能为空。需要全尺寸实验时另用 `CGImageSourceCreateImageAtIndex`，但不能假设它等价于已经处理方向的缩略图路径。上述选项语义已与本机 Apple header 核对。[创建缩略图](https://developer.apple.com/documentation/imageio/cgimagesourcecreatethumbnailatindex(_:_:_:))、[创建索引图像](https://developer.apple.com/documentation/imageio/cgimagesourcecreateimageatindex(_:_:_:))
+
+若需输出 PNG，可用 `CGImageDestinationCreateWithURL(..., "public.png" as CFString, 1, nil)`，添加图像后调用 `CGImageDestinationFinalize` 并检查 `true`。**该 URL destination 会覆盖目标已有数据**；因此这里只能使用本任务新建且受控的 job 目录/全新输出名，不能把源文件路径或已有用户文件当输出。Finalize 前文件不算有效，Finalize 成功也仍需在实际 Tauri 窗口打开验证。[URL destination](https://developer.apple.com/documentation/imageio/cgimagedestinationcreatewithurl(_:_:_:_:))、[Finalize](https://developer.apple.com/documentation/imageio/cgimagedestinationfinalize(_:))
+
+ImageIO 的接口存在不保证每个 HEIC 配置、损坏样本、色彩空间或 HDR 图像都能按产品目标显示。方向、透明度、颜色与主图选择要在有明确预期的样本上验证；不得把解码后的 PNG 宣称为原件或无损元数据副本。
+
+### ImageIO：GIF / 动画 WebP 的帧与时长
+
+以 `CGImageSourceGetCount` 取得帧数；对每个合法索引调用 `CGImageSourceCopyPropertiesAtIndex` 和 `CGImageSourceCreateImageAtIndex`（或尺寸受限缩略图）。属性字典用相应格式子字典读取，保留原始值与实际采用的时长，不能把缺失属性伪装为已知值。[逐帧属性](https://developer.apple.com/documentation/imageio/cgimagesourcecopypropertiesatindex(_:_:_:))
+
+| 格式 | 子字典 | 优先时长 | 次选时长 | 本机 SDK 标注 |
+|---|---|---|---|---|
+| GIF | `kCGImagePropertyGIFDictionary` | `kCGImagePropertyGIFUnclampedDelayTime` | `kCGImagePropertyGIFDelayTime` | 未钳制时长 macOS 10.7 起 |
+| WebP | `kCGImagePropertyWebPDictionary` | `kCGImagePropertyWebPUnclampedDelayTime` | `kCGImagePropertyWebPDelayTime` | WebP 字典、时长及循环属性 macOS 11.0 起 |
+
+时长单位是秒。WebP 普通 `DelayTime` 的官方文档明确将小于 100ms 的值调整为 100ms；未调整的键才适合保留短帧时长。GIF 的未钳制键可以为 0，普通键有下限调整。因此实验应优先有效未钳制值，并把零值、负值、非有限值和缺失时的播放兜底记录为实验规则，不能声称该兜底来自文件。直接使用普通时长可能让快速动图变慢。[WebP 普通时长](https://developer.apple.com/documentation/imageio/kcgimagepropertywebpdelaytime)、[WebP 未调整时长](https://developer.apple.com/documentation/imageio/kcgimagepropertywebpunclampeddelaytime)、[GIF 未钳制时长](https://developer.apple.com/documentation/imageio/kcgimagepropertygifunclampeddelaytime)
+
+循环次数、画布尺寸与 frame-info 键存在于格式字典，但本研究没有证明所有 disposal/blend/局部帧都会得到正确合成画面。实验需要至少有明显两帧变化、短时长、透明局部帧/处置方式的自制样本，观察真实画面、总时长以及播放/暂停，而不只计数。逐帧 PNG 加时间表只能作为实验预览实现；预解码所有帧的内存和磁盘成本需显式限制，不能由短样本通过推成大动图性能承诺。
+
+### PDFKit：多页 raster 与缩放
+
+最短路径是 `PDFDocument(url:)` → 检查文档与锁定状态 → `pageCount` → `page(at:)` → `page.thumbnail(of:for:)`。遍历必须先限制在 `0..<pageCount`，因为官方说明 `page(at:)` 越界可能抛出 Objective-C exception，不能依赖 Swift optional 自动兜底。锁定、加载失败和无有效页必须分别记录。[PDFDocument](https://developer.apple.com/documentation/pdfkit/pdfdocument)、[页数](https://developer.apple.com/documentation/pdfkit/pdfdocument/pagecount)、[按索引取页](https://developer.apple.com/documentation/pdfkit/pdfdocument/page(at:))
+
+`thumbnail(of: NSSize, for: .cropBox)` 在 macOS 返回 `NSImage`，macOS 10.13 起可用。本机 header 说明它包括批注并保留宽高比，返回尺寸可能小于请求值；要检查实际 raster 尺寸，不把 NSImage 逻辑 size 直接当像素数。可从 NSImage 取得 CGImage 后沿用上述 PNG 输出路线。缩放实验应按所需显示大小重新渲染页面，而不仅放大一个很小的固定缩略图。[PDFPage thumbnail](https://developer.apple.com/documentation/pdfkit/pdfpage/thumbnail(of:for:))
+
+需要精确像素画布时，可建立有上限的 bitmap `CGContext`，使用 `page.bounds(for:)` 计算比例并调用 `page.draw(with:to:)`。本机 header 标注该方法 macOS 10.12 起可用，会考虑页旋转与显示框裁剪，但不自动清白色背景；自定义绘制应处理背景/坐标和实际输出尺寸，旋转/非零裁剪框样本必须验证。[PDFPage draw](https://developer.apple.com/documentation/pdfkit/pdfpage/draw(with:to:))
+
+`isLocked` 与“加密”不是同义词：PDFKit 可能自动解开空密码的加密文档。首发已确认的受限加密 PDF 不应因 helper 内置能力而自动扩展为密码输入、文本选择、查找、OCR 或全库全文搜索。多页 raster 成功只证明本次样本的多页预览路径。[锁定语义](https://developer.apple.com/documentation/pdfkit/pdfdocument/islocked)
+
+### AVFoundation：本地代理、进度与取消
+
+可用自制本地 `AVURLAsset` 建立 `AVAssetExportSession(asset:presetName:)`。实验候选 `AVAssetExportPreset1280x720` 官方定义为 H.264 视频/AAC 音频，较小源不会放大；这是代理实验配置，不是全部素材的统一生产规格。[1280×720 preset](https://developer.apple.com/documentation/avfoundation/avassetexportpreset1280x720)
+
+初始化是可失败的；再读取 `await session.compatibleFileTypes` 并确认包含 `.mp4`。该属性会检查当前素材/preset 的兼容性；单独的 `supportedFileTypes` 只描述 preset 能写的类型，不检查具体素材。即使预检查通过，实际读取、解码、编码和写盘仍可能失败。[兼容输出类型](https://developer.apple.com/documentation/avfoundation/avassetexportsession/determinecompatiblefiletypes(completionhandler:))
+
+当前 Swift 路线的核心调用形态如下；它不是完整 helper，也未编译运行：
+
+```swift
+let asset = AVURLAsset(url: inputURL)
+guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1280x720) else {
+    throw ExperimentFailure.unavailablePreset
+}
+let compatible = await session.compatibleFileTypes
+guard compatible.contains(.mp4) else { throw ExperimentFailure.unsupportedOutput }
+try await session.export(to: newJobOutputURL, as: .mp4)
+```
+
+`export(to:as:isolation:)` 的 `isolation` 参数默认 `#isolation`；本次官方文档及 SDK Swift overlay 均标注 macOS 10.15 起，并带 `@backDeployed(before: macOS 26.0, ...)`。这依赖相应新 SDK/编译器提供接口，不能把旧 SDK 当作一定认识此签名。接口对取消和不支持的输出类型抛错。[现代 export](https://developer.apple.com/documentation/avfoundation/avassetexportsession/export(to:as:isolation:))
+
+进度用 `states(updateInterval:)`，macOS 15 起可用；间隔必须大于 0，默认 `.infinity`，要持续展示进度需显式设置有限正间隔。状态只有 `pending`、`waiting`、`exporting(progress:)`；没有在这个枚举里等到 `completed` 的做法。导出完成/失败/取消必须由 `await export(...)` 的返回或抛错判定，不能由监控循环结束或一次进度值代替。[states](https://developer.apple.com/documentation/avfoundation/avassetexportsession/states(updateinterval:))、[State](https://developer.apple.com/documentation/avfoundation/avassetexportsession/state)
+
+官方允许对发起导出的 Task 或其父 Task 调用 `cancel()`。本机 SDK overlay 显示取消处理器调用 `cancelExport()`，等待底层导出结束，并将取消终态转换为 `CancellationError`；旧 completion-handler 路线则在成功、失败或取消后回调，需要读取终态。**收到外部取消请求、调用 Task.cancel、底层任务收束、清理未完成输出，是四个不同时间点**。取消/完成存在竞争，最终结果必须如实记录；只停止进度监控 Task 并不能当作取消导出。[现代取消约定](https://developer.apple.com/documentation/avfoundation/avassetexportsession/export(to:as:isolation:))、[旧 cancelExport](https://developer.apple.com/documentation/avfoundation/avassetexportsession/cancelexport())
+
+实现建议：保留实际导出 Task 的句柄，由受控的父进程消息触发取消，等待该 Task 返回后再按实验 job 所有权处理残留；不要在导出仍运行时删它正写的文件。若 helper 被强行终止，结果记为中断/待核验，不能等价于正常取消。`AVAssetExportSession` 的 SDK 声明为 non-Sendable，因此让 session、export 与进度观察保持在明确的同一 actor/隔离上下文，例如实验用 `@MainActor`；不要靠给 session 增加未经证明的 `@unchecked Sendable` 绕过问题。避免用主线程阻塞等待把异步工作卡住。
+
+H.264 preset 不等于已经验证 HDR → SDR 色彩映射、透明通道保留或全部 HEVC profile。明确标记的 SDR 预览目标仍需实际 HDR 样本、输出色彩信息及画面观察验证；主图/缩略图、PDF raster 和视频代理都只是派生内容，原文件保持不变。代理输出存在或导出返回成功后，还要在实际 Tauri 包中验证读取、播放、定位及输出身份，才可作为这个实验的可用结果。
+
+### 编译与随包验证边界
+
+主代理可用 CLT 的 Swift 编译器编译一个链接 `Foundation`、`AppKit`、`ImageIO`、`PDFKit`、`AVFoundation` 的自有命令行程序，然后沿用本报告 `externalBin` 的目标后缀规则随原型打包。helper 的源码、编译参数、实际 SDK、deployment target、架构、散列、依赖及运行结果应进入实验记录。此处只给出 API 路线，不证明编译成功、Swift runtime/最低系统兼容或组件在包内独立装载。
+
+该方案使用 macOS 系统框架；不是把 SDK framework 复制到 Windows，也不是因使用 Swift 就获得跨平台媒体能力。整个辅助程序输入只允许实验清单内的自制样本 ID，输出只指向该次 job 的新目录；父进程继续拥有进度、取消、原件保护和最终发布判断。CLI/helper 原型与正式 Rust 业务边界、未来 opi/插件能力边界的生产设计分开处理。
+
+最小待测表：
+
+| 场景 | 要观察的结果 | 本研究状态 |
+|---|---|---|
+| HEIC 主图/旋转样本 | 主图索引、方向、尺寸、PNG 能在真实 Tauri 加载 | 未运行 |
+| GIF / WebP 多帧与短帧 | 帧变化、未钳制时长、循环/透明合成、播放暂停 | 未运行 |
+| 两页以上 PDF / 旋转裁剪页 | 页数/顺序、逐页渲染、实际像素、放大重新渲染 | 未运行 |
+| 本地 H.264 / HEVC → MP4 代理 | 输入兼容、视频/音频、时长/定位、包内实际调用 | 未运行 |
+| 导出早期/中途/临近结束取消 | 取消请求与终态区分、子进程收束、输出保留/清理记录 | 未运行 |
+| 不支持/损坏样本与无写权限 | 明确失败、原件未修改、不误发布部分输出 | 未运行 |
+| Windows 对照 | 需另选对应运行能力并在 Windows 实际包验证 | 本方案未提供 |
+
+补充来源读取方式：Apple 网页在 Web 工具中仅返回 JavaScript 提示；页面所提供的官方 `.md` 链接因工具不支持 `text/markdown` 而失败后，改为只读 HTTP 获取同一官方 Markdown，并与本机 Apple SDK 文本交叉核对。`PDFDocument/init(url:)` 和独立 `compatibleFileTypes` 的猜测路径返回 404，不以该链接作证据；前者用 PDFDocument 文档/SDK 声明，后者以 `determineCompatibleFileTypes(completionHandler:)` 页面明确列出的异步属性为准。只追加本报告，没有改其他工程文件或运行 helper。
