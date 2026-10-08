@@ -1,0 +1,365 @@
+[
+  {
+    "directory": "66581-1791476007166337000",
+    "result": {
+      "backend": "Apple ImageIO (system)",
+      "delays": [
+        0.1
+      ],
+      "elapsedMs": 84.62107181549072,
+      "files": [
+        "frame-0.png"
+      ],
+      "kind": "image",
+      "primaryIndex": 0
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 201
+      },
+      {
+        "name": "frame-0.png",
+        "bytes": 44641
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476166916426000",
+    "result": {
+      "backend": "Apple ImageIO (system)",
+      "delays": [
+        0.1
+      ],
+      "elapsedMs": 79.39505577087402,
+      "files": [
+        "frame-0.png"
+      ],
+      "kind": "image",
+      "primaryIndex": 0
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 201
+      },
+      {
+        "name": "frame-0.png",
+        "bytes": 44641
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476180773438000",
+    "result": {
+      "backend": "Apple PDFKit (system)",
+      "elapsedMs": 47.43504524230957,
+      "files": [
+        "page-1.png",
+        "page-2.png"
+      ],
+      "kind": "pdf",
+      "pages": 2
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 163
+      },
+      {
+        "name": "page-1.png",
+        "bytes": 33118
+      },
+      {
+        "name": "page-2.png",
+        "bytes": 34325
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476205557074000",
+    "result": {
+      "backend": "Apple ImageIO (system)",
+      "delays": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "elapsedMs": 7.867097854614258,
+      "files": [
+        "frame-0.png",
+        "frame-1.png",
+        "frame-2.png",
+        "frame-3.png"
+      ],
+      "kind": "frames",
+      "primaryIndex": 0
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "frame-2.png",
+        "bytes": 1174
+      },
+      {
+        "name": "frame-3.png",
+        "bytes": 1149
+      },
+      {
+        "name": "result.json",
+        "bytes": 274
+      },
+      {
+        "name": "frame-1.png",
+        "bytes": 1171
+      },
+      {
+        "name": "frame-0.png",
+        "bytes": 1179
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476236448347000",
+    "result": {
+      "backend": "Apple ImageIO (system)",
+      "delays": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "elapsedMs": 11.207938194274902,
+      "files": [
+        "frame-0.png",
+        "frame-1.png",
+        "frame-2.png",
+        "frame-3.png",
+        "frame-4.png",
+        "frame-5.png",
+        "frame-6.png",
+        "frame-7.png",
+        "frame-8.png",
+        "frame-9.png"
+      ],
+      "kind": "frames",
+      "primaryIndex": 0
+    },
+    "files": [
+      {
+        "name": "frame-4.png",
+        "bytes": 6145
+      },
+      {
+        "name": "frame-5.png",
+        "bytes": 6023
+      },
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "frame-7.png",
+        "bytes": 6010
+      },
+      {
+        "name": "frame-6.png",
+        "bytes": 6108
+      },
+      {
+        "name": "frame-2.png",
+        "bytes": 6088
+      },
+      {
+        "name": "frame-3.png",
+        "bytes": 6098
+      },
+      {
+        "name": "result.json",
+        "bytes": 598
+      },
+      {
+        "name": "frame-1.png",
+        "bytes": 5906
+      },
+      {
+        "name": "frame-0.png",
+        "bytes": 5106
+      },
+      {
+        "name": "frame-8.png",
+        "bytes": 5852
+      },
+      {
+        "name": "frame-9.png",
+        "bytes": 6150
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476239306503000",
+    "result": null,
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 25
+      }
+    ],
+    "stderr": "Cannot decode image at 0\n"
+  },
+  {
+    "directory": "66664-1791476250440696000",
+    "result": {
+      "backend": "Apple AVFoundation (system)",
+      "duration": 5,
+      "elapsedMs": 89.58494663238525,
+      "files": [
+        "poster.png"
+      ],
+      "kind": "poster"
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 158
+      },
+      {
+        "name": "poster.png",
+        "bytes": 42791
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66664-1791476251806632000",
+    "result": {
+      "backend": "Apple AVFoundation / 1280x720 preset",
+      "color": "SDR input only; HDR conversion not validated",
+      "duration": 5,
+      "elapsedMs": 232.14495182037354,
+      "files": [
+        "proxy.mp4"
+      ],
+      "kind": "proxy"
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 226
+      },
+      {
+        "name": "proxy.mp4",
+        "bytes": 376163
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66768-1791476450365980000",
+    "result": null,
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "proxy.mp4",
+        "bytes": 3376343
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66768-1791476458292879000",
+    "result": {
+      "backend": "Apple AVFoundation / 1280x720 preset",
+      "color": "SDR input only; HDR conversion not validated",
+      "duration": 120.49072265625,
+      "elapsedMs": 1567.5400495529175,
+      "files": [
+        "proxy.mp4"
+      ],
+      "kind": "proxy"
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 240
+      },
+      {
+        "name": "proxy.mp4",
+        "bytes": 8899761
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "directory": "66950-1791476797033850000",
+    "result": {
+      "backend": "Apple ImageIO (system)",
+      "delays": [
+        0.1
+      ],
+      "elapsedMs": 79.92804050445557,
+      "files": [
+        "frame-0.png"
+      ],
+      "kind": "image",
+      "primaryIndex": 0
+    },
+    "files": [
+      {
+        "name": "stderr.log",
+        "bytes": 0
+      },
+      {
+        "name": "result.json",
+        "bytes": 201
+      },
+      {
+        "name": "frame-0.png",
+        "bytes": 44641
+      }
+    ],
+    "stderr": ""
+  }
+]

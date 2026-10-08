@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Velvetroom Media Lab",
+  "version": "0.0.1",
+  "identifier": "ai.odradek.velvetroom.media-lab",
+  "build": {
+    "frontendDist": "../web"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Velvetroom · 媒体验证原型",
+        "width": 1180,
+        "height": 840
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$RESOURCE/fixtures/**/*",
+          "$APPCACHE/media-probe/**/*"
+        ]
+      },
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost blob: data:; media-src 'self' asset: http://asset.localhost blob:; frame-src 'self'; object-src 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app"
+    ],
+    "icon": [
+      "icons/icon.png"
+    ],
+    "resources": [
+      "fixtures/",
+      "fixture-manifest.json",
+      "media-probe"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "15.0"
+    }
+  }
+}

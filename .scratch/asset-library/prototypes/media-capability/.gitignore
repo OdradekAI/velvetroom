@@ -1,0 +1,7 @@
+/src-tauri/target/
+/node_modules/
+/observations/*.json
+/src-tauri/media-probe
+/base-fixtures/
+/fixture-manifest.json
+/src-tauri/gen/

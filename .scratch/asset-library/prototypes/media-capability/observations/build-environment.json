@@ -1,0 +1,122 @@
+{
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434\n",
+  "machine": "arm64\n",
+  "cpu": "Apple M5 Pro\n",
+  "memory": "68719476736\n",
+  "rust": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0\n",
+  "sdk": "27.0\n",
+  "cli": "tauri-cli 2.12.1\n",
+  "signing": {
+    "exitCode": 0,
+    "output": "Executable=/Users/luiz/.cache/velvetroom-prototype/media-target/release/bundle/macos/Velvetroom Media Lab.app/Contents/MacOS/velvetroom-media-lab\nIdentifier=ai.odradek.velvetroom.media-lab\nFormat=app bundle with Mach-O thin (arm64)\nCodeDirectory v=20400 size=20472 flags=0x2(adhoc) hashes=633+3 location=embedded\nSignature=adhoc\nInfo.plist entries=14\nTeamIdentifier=not set\nSealed Resources version=2 rules=13 files=19\nInternal requirements count=0 size=12\nTotal signatures=1\nChosen signature=1\n"
+  },
+  "signatureCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "helperDeps": "/Users/luiz/.cache/velvetroom-prototype/media-target/release/bundle/macos/Velvetroom Media Lab.app/Contents/Resources/media-probe:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation (compatibility version 1.0.0, current version 2.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/PDFKit.framework/Versions/A/PDFKit (compatibility version 1.0.0, current version 1537.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftAVFoundation.dylib (compatibility version 1.0.0, current version 2450.77.5)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreAudio.dylib (compatibility version 1.0.0, current version 482.102.10, weak)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)\n\t/usr/lib/swift/libswiftCoreMIDI.dylib (compatibility version 1.0.0, current version 6.0.0, weak)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2, weak)\n\t/usr/lib/swift/libswiftIOKit.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)\n\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0, weak)\n\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)\n\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 917.0.1)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)\n\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n\t/usr/lib/swift/libswiftCoreMedia.dylib (compatibility version 1.0.0, current version 3350.77.5)\n",
+  "appDeps": "/Users/luiz/.cache/velvetroom-prototype/media-target/release/bundle/macos/Velvetroom Media Lab.app/Contents/MacOS/velvetroom-media-lab:\n\t/System/Library/Frameworks/WebKit.framework/Versions/A/WebKit (compatibility version 1.0.0, current version 625.1.29)\n\t/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices (compatibility version 1.0.0, current version 66.0.0)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 2050.0.0)\n\t/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon (compatibility version 2.0.0, current version 170.0.0)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 758.27.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)\n\t/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore (compatibility version 1.2.0, current version 1223.2.2)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync (compatibility version 1.0.0, current version 3929.0.0)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n",
+  "bundleFiles": [
+    {
+      "path": "Contents/Info.plist",
+      "bytes": 1028
+    },
+    {
+      "path": "Contents/_CodeSignature/CodeResources",
+      "bytes": 6854
+    },
+    {
+      "path": "Contents/MacOS/velvetroom-media-lab",
+      "bytes": 10390256
+    },
+    {
+      "path": "Contents/Resources/media-probe",
+      "bytes": 126064
+    },
+    {
+      "path": "Contents/Resources/Velvetroom Media Lab.icns",
+      "bytes": 33434
+    },
+    {
+      "path": "Contents/Resources/fixture-manifest.json",
+      "bytes": 4357
+    },
+    {
+      "path": "Contents/Resources/fixtures/tone.mp3",
+      "bytes": 24429
+    },
+    {
+      "path": "Contents/Resources/fixtures/alpha.png",
+      "bytes": 65785
+    },
+    {
+      "path": "Contents/Resources/fixtures/still.webp",
+      "bytes": 3696
+    },
+    {
+      "path": "Contents/Resources/fixtures/chart.png",
+      "bytes": 7549
+    },
+    {
+      "path": "Contents/Resources/fixtures/two-pages.pdf",
+      "bytes": 863
+    },
+    {
+      "path": "Contents/Resources/fixtures/h264.mp4",
+      "bytes": 405914
+    },
+    {
+      "path": "Contents/Resources/fixtures/photo.jpg",
+      "bytes": 7770
+    },
+    {
+      "path": "Contents/Resources/fixtures/hevc.mp4",
+      "bytes": 164278
+    },
+    {
+      "path": "Contents/Resources/fixtures/animation.webp",
+      "bytes": 506
+    },
+    {
+      "path": "Contents/Resources/fixtures/primary.heic",
+      "bytes": 6425
+    },
+    {
+      "path": "Contents/Resources/fixtures/long-hevc.mp4",
+      "bytes": 3855215
+    },
+    {
+      "path": "Contents/Resources/fixtures/tone.wav",
+      "bytes": 288078
+    },
+    {
+      "path": "Contents/Resources/fixtures/broken.jpg",
+      "bytes": 14
+    },
+    {
+      "path": "Contents/Resources/fixtures/large.png",
+      "bytes": 1952421
+    },
+    {
+      "path": "Contents/Resources/fixtures/animation.gif",
+      "bytes": 26195
+    },
+    {
+      "path": "Contents/Resources/fixtures/h264.mov",
+      "bytes": 405965
+    }
+  ],
+  "Contents/MacOS/velvetroom-media-lab sha256": "92f1fefe2f6147446c7dbcb0f7a382974ee5f3744f5fd4d1ed838f9c587859f9",
+  "Contents/Resources/media-probe sha256": "cc388d94e71e105d4bbc9f029d51ddd4d0744d77e7dd6c0ea3d00afb7c51b2f8",
+  "minimumSystemVersionDeclared": "15.0",
+  "systemWebKit": {
+    "CFBundleVersion": "22625.1.29.11.28",
+    "CFBundleShortVersionString": "22625"
+  },
+  "notes": [
+    "macOS 15.0 is the experiment deployment target, not a verified minimum or a product decision.",
+    "Ad-hoc signing verifies local bundle integrity only. No developer identity, notarization, update or clean-machine validation.",
+    "Earlier unsealed bundle failed strict code signature verification; final local ad-hoc bundle passed."
+  ]
+}

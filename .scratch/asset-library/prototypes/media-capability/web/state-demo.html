@@ -1,0 +1,64 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>按需预览 · 状态实验</title>
+<style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,sans-serif;max-width:1050px;margin:32px auto;padding:0 24px;color:#20304a;background:#f3f6fa}h1{margin:0;font-size:28px}h2{font-size:19px;margin:0 0 12px}section{background:white;padding:22px;margin:20px 0;border:1px solid #dce3ed;border-radius:12px}small,p{color:#5a6880}button{font:inherit;background:#eef3fc;border:1px solid #bed0ec;color:#254674;padding:7px 12px;border-radius:6px;margin:4px;cursor:pointer}button.active{background:#254674;color:#fff}dl{display:grid;grid-template-columns:150px 1fr;gap:8px;margin:0}dt{color:#5a6880}dd{margin:0}#message{border-left:4px solid #517dbe;padding:10px 14px;background:#eef3fc}#steps button{display:block;text-align:left}#steps button:disabled{opacity:.45;cursor:default}a{color:#315f9d}footer{color:#5a6880;font-size:13px}body{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}body>h1,body>p,footer{grid-column:1/-1}section:nth-of-type(1){grid-column:1;grid-row:3/5;position:sticky;top:14px;align-self:start}section:nth-of-type(2),section:nth-of-type(3){grid-column:2}#steps button{width:100%}@media(max-width:800px){body{display:block}section:nth-of-type(1){position:static}}</style>
+<h1>按需预览 · 状态实验</h1><p>一次性原型。这里模拟「需要下载或生成代理时，确认、取消、离线和旧内容该怎样表达」。不读写任何文件，不证明下载、解码或恢复已经实现。<a href="index.html">实际媒体实验 →</a></p>
+<section><h2>当前状态</h2><dl id="state"></dl><p id="message" aria-live="polite"></p></section>
+<section><h2>自由尝试</h2><div id="actions"></div></section>
+<section><h2>引导场景</h2><div id="tabs"></div><p id="description"></p><div id="steps"></div></section>
+<footer>状态只保存在本页面内，刷新即重置。模拟的 v1/v2 只表示内容版本；界面没有把代理称为原件。</footer>
+<script>
+// Pure model: no DOM, timers, I/O, persistence, or claims about real transfers.
+const initial=()=>({online:true,sourceVersion:1,localVersion:null,proxyVersion:null,phase:'空闲',progress:0,requestedVersion:null,unknown:false,protectedPartial:false,message:'浏览没有启动完整下载，也没有生成代理。'});
+function reduce(s,a){s={...s};const reject=m=>({...s,message:m});
+ if(a==='reset')return initial();
+ if(a==='offline')return {...s,online:false,phase:['下载中','核验中'].includes(s.phase)?'暂停':s.phase,message:'来源离线。已经核验的本地内容仍可查看；是否更新暂不可确认。'};
+ if(a==='online')return {...s,online:true,message:'来源重新在线；任务没有自动恢复。'};
+ if(a==='change')return {...s,sourceVersion:s.sourceVersion+1,message:'已确认原件内容更新；旧本地内容不会冒充最新版，也不会自动替换。'};
+ if(a==='request'){
+  if(['下载中','核验中','生成代理中','正在取消','暂停'].includes(s.phase))return reject('已有任务正在处理；先等待它收束。');
+  if(s.unknown)return reject('上次结果不明，必须先核验，不能直接重试或清理。');
+  if(!s.online&&s.localVersion===null)return reject('来源离线且没有完整本地副本，暂不能准备。');
+  return {...s,phase:'等待确认',requestedVersion:s.sourceVersion,progress:0,message:'此预览需要完整本地文件及代理。预计额外约 120MB（示例值，非测量）；确认后才开始。'};
+ }
+ if(a==='start'){
+  if(s.phase!=='等待确认')return reject('先提出预览请求，阅读准备原因和空间说明。');
+  if(!s.online&&s.localVersion!==s.requestedVersion)return reject('缺少当前版本的完整本地文件，等待来源恢复。');
+  return {...s,phase:s.localVersion===s.requestedVersion?'生成代理中':'下载中',message:'准备已明确开始；原件不会被代理覆盖。'};
+ }
+ if(a==='bytes')return s.phase==='下载中'?{...s,progress:100,phase:'核验中',message:'字节传输达到 100%，仍在核验，不能标记完整可用。'}:reject('当前没有下载任务。');
+ if(a==='verified'){
+  if(s.phase!=='核验中')return reject('只有传输完成后才能确认完整性。');
+  if(s.requestedVersion!==s.sourceVersion)return {...s,phase:'失败',unknown:true,protectedPartial:true,message:'读取期间原件变更，未确认本地完整性；保留待核验，不发布代理。'};
+  return {...s,localVersion:s.requestedVersion,phase:'生成代理中',message:'完整文件核验通过，开始生成预览代理。'};
+ }
+ if(a==='proxy')return s.phase==='生成代理中'?{...s,proxyVersion:s.localVersion,phase:'可预览',message:'代理已完成且核验；标为预览代理，原件不变。'}:reject('没有正在生成的代理。');
+ if(a==='cancel'){
+  if(s.phase==='等待确认')return {...s,phase:'已取消',message:'未开始准备，没有下载或输出。'};
+  if(!['下载中','核验中','生成代理中','暂停'].includes(s.phase))return reject('当前没有可取消的在途任务。');
+  return {...s,phase:'正在取消',message:'已请求取消；等待处理收束。已完成的本地完整副本仍保留。'};
+ }
+ if(a==='stopped')return s.phase==='正在取消'?{...s,phase:'已取消',message:'已确认在途操作结束；仅安全处理本任务未完成临时内容，不删除已核验本地副本。'}:reject('先请求取消，并确认操作真正停止。');
+ if(a==='unknown')return {...s,phase:'结果待核验',unknown:true,protectedPartial:true,message:'状态或输出不明：暂停使用和自动清理，先核验。'};
+ if(a==='reconcile')return s.unknown?{...s,phase:'已取消',unknown:false,protectedPartial:false,message:'本场景设定：核验确认没有未收束操作，临时输出不可用；现在可重新请求。'}:reject('当前没有待核验结果。');
+ if(a==='resume')return s.phase==='暂停'&&s.online?{...s,phase:'下载中',message:'你已选择继续；恢复前真实实现还须重新核对原件身份。'}:reject('来源须在线且任务处于暂停。');
+ if(a==='old')return s.proxyVersion!==null?{...s,message:`明确选择本地 v${s.proxyVersion} 代理。${s.proxyVersion!==s.sourceVersion?'已知旧内容。':!s.online?'来源离线，尚未确认是否更新。':'与已知原件版本一致。'} 原件状态不被改写。`}:reject('还没有可查看的本地代理。');
+ return s;
+}
+</script>
+<script>
+const labels={reset:'重置',request:'请求预览',start:'确认开始准备',bytes:'模拟传输达到 100%',verified:'模拟完整核验通过',proxy:'模拟代理完成并核验',cancel:'请求取消',stopped:'确认在途操作已停止',offline:'来源离线',online:'来源恢复',resume:'手动继续',change:'原件外部更新',old:'明确查看本地代理',unknown:'结果不明',reconcile:'模拟结果核验完成'};
+const scenarios=[
+ ['完整准备','观察 100% 与真正可预览之间还有两步。',['request','start','bytes','verified','proxy']],
+ ['取消代理','完整下载已经核验，取消代理不应把完整下载一起删掉。',['request','start','bytes','verified','cancel','stopped','request','start','proxy']],
+ ['离线与旧内容','区分未确认更新与已确认旧版本；重连不自动替换。',['request','start','bytes','verified','proxy','offline','old','online','change','old']],
+ ['断开与继续','断开后保留暂停状态，重连仍等待手动继续。',['request','start','offline','online','resume','bytes','verified','proxy']],
+ ['结果不明','结果不明时直接重试被拒绝；核验后才可重新准备。',['request','start','unknown','request','reconcile','request','start']],
+ ['读取时变更','不将变化期间读到的未知文件发布为有效代理。',['request','start','bytes','change','verified']]
+];
+let state=initial(),scenario=0,step=0;const el=id=>document.getElementById(id);
+function act(a){state=reduce(state,a);render()}
+function render(){const fields=[['来源状态',state.online?'在线':'离线'],['已知原件版本','v'+state.sourceVersion],['完整本地文件',state.localVersion===null?'无':`已核验 v${state.localVersion}`],['本地预览代理',state.proxyVersion===null?'无':`v${state.proxyVersion} · ${state.proxyVersion===state.sourceVersion?'与已知原件一致':'旧内容'}${state.online?'':' · 来源更新未确认'}`],['准备阶段',state.phase],['字节传输进度',state.progress+'%'],['本次请求版本',state.requestedVersion===null?'无':'v'+state.requestedVersion],['结果是否明确',state.unknown?'不明，禁止直接重试／清理':'已知'],['未完成内容保护',state.protectedPartial?'保留待核验':'无额外保护']];el('state').replaceChildren();for(const [k,v]of fields){let dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=v;el('state').append(dt,dd)}el('message').textContent=state.message}
+for(const [a,label]of Object.entries(labels)){const b=document.createElement('button');b.textContent=label;b.onclick=()=>act(a);el('actions').append(b)}
+function show(i){scenario=i;step=0;state=initial();el('description').textContent=scenarios[i][1];[...el('tabs').children].forEach((b,j)=>b.classList.toggle('active',i===j));drawSteps();render()}
+function drawSteps(){el('steps').replaceChildren();scenarios[scenario][2].forEach((a,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+labels[a];b.disabled=i!==step;b.onclick=()=>{act(a);step++;drawSteps()};el('steps').append(b)})}
+scenarios.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s[0];b.onclick=()=>show(i);el('tabs').append(b)});show(0);
+</script></html>
