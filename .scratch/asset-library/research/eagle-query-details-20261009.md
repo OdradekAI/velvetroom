@@ -35,8 +35,8 @@
 |---|---|---|
 | 空格分隔多个词 | 空格表示 AND，结果须与全部关键词匹配；专门排查文也如此说明。[多关键词空格](https://cn.eagle.cool/support/article/why-doesnt-space-work-when-searching-with-multiple-keywords) | 多空格、制表符、全角空格、词内空白的处理；字面量 `AND` 是否是运算符。 |
 | 减号 | 半角减号放在要排除的词前；文章给出单个排除词的写法。[关键词](https://cn.eagle.cool/support/article/search-by-keywords) | 否定短语或整组、连续减号、词内连字符、只有负向条件时的完整结果范围及转义规则。 |
-| 或与分组 | `OR`、`||` 表示或，圆括号可组合多个条件，官方使用“猫或狗，再要求黑色”的例子。[OR 设置](https://cn.eagle.cool/support/article/how-to-configure-or-relationship-conditions-in-eagle-search) | 不带括号的优先级、任意嵌套深度、小写 `or`、非法括号和空组的处理。 |
-| 引号 | 关键词文章确有 `("cat food" || "dog food") -pet store` 示例。[关键词](https://cn.eagle.cool/support/article/search-by-keywords) | 没有独立解释精确短语、连续字符、单双引号、中文引号或转义。示例把尾部解释为排除宠物店，却未解释减号作用到一个词还是整个空格短语；不能替它补出形式化语法。 |
+| 或与分组 | `OR`、`\|\|` 表示或，圆括号可组合多个条件，官方使用“猫或狗，再要求黑色”的例子。[OR 设置](https://cn.eagle.cool/support/article/how-to-configure-or-relationship-conditions-in-eagle-search) | 不带括号的优先级、任意嵌套深度、小写 `or`、非法括号和空组的处理。 |
+| 引号 | 关键词文章确有 `("cat food" \|\| "dog food") -pet store` 示例。[关键词](https://cn.eagle.cool/support/article/search-by-keywords) | 没有独立解释精确短语、连续字符、单双引号、中文引号或转义。示例把尾部解释为排除宠物店，却未解释减号作用到一个词还是整个空格短语；不能替它补出形式化语法。 |
 | 中文 | 自动补齐明确支持中英文。[关键词](https://cn.eagle.cool/support/article/search-by-keywords) | 没有承诺中文分词、拼音、繁简、全半角、Unicode 规范化、标点折叠或忽略词间空格。 |
 
 模糊输入专题列举的入口是输入标签、查找文件夹、图片分类及标签筛选搜索，使用英文非连续字符的顺序匹配例子。它不是所有全局关键词字段的通用规范化定义。[模糊输入](https://cn.eagle.cool/support/article/fuzzy-search)
